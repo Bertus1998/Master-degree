@@ -2,9 +2,9 @@ import glob
 import os
 
 import cv2
+import imageio
 import matplotlib.image as img
 import numpy as np
-import imageio
 
 
 class MyImage:
@@ -23,16 +23,15 @@ def load_images_jpg(img_dir, number):
         return [img.imread(file) for file in glob.glob(img_dir + '/*.*')]
 
 
-def load_images_png(img_dir, numbers):
+def load_images_png(img_dir):
     images = []
-    i = 0
     for image_path in glob.glob(img_dir + "\\*.png"):
-        i = i + 1
-        if i == 6:
-            i = i + 2
-        if i in numbers:
-            images.append(imageio.imread(image_path))
+        images.append(imageio.imread(image_path))
     return images
+
+
+def load_images_png_second_issue(img_dir, numbers):
+    return
 
 
 def save_image(name, image, place):
@@ -42,8 +41,12 @@ def save_image(name, image, place):
     print("Image was saved")
 
 
-def resize_image(image, dim):
-    return cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+def resize_image(image, dim, masks=False):
+    if masks:
+        return cv2.threshold(cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+                             , 0.5, 1, cv2.THRESH_BINARY)[1]
+    else:
+        return cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
 
 
 def extract_colors(image, number):
